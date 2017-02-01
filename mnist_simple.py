@@ -20,16 +20,16 @@ weights = tensorflow.Variable(tensorflow.zeros([IMAGE_PIXEL_COUNT, 10]))
 # Bias per neuron.
 bias = tensorflow.Variable(tensorflow.zeros([10]))
 
-Answer = tensorflow.nn.softmax(tensorflow.matmul(flattened_images, weights) + bias)
+answer = tensorflow.nn.softmax(tensorflow.matmul(flattened_images, weights) + bias)
 
 # Correct Answers will be stored here
 model_answers = tensorflow.placeholder(tensorflow.float32, [None, 10])
 
 # We use the cross entropy value as our loss function.
-cross_entropy = -(tensorflow.reduce_sum(model_answers * tensorflow.log(Answer)))
+cross_entropy = -(tensorflow.reduce_sum(model_answers * tensorflow.log(answer)))
 
 # Determine if the answer the neural network came up with was correct by comparing against the known answer
-is_correct = tensorflow.equal(tensorflow.argmax(Answer, 1), tensorflow.argmax(model_answers, 1))
+is_correct = tensorflow.equal(tensorflow.argmax(answer, 1), tensorflow.argmax(model_answers, 1))
 accuracy = tensorflow.reduce_mean(tensorflow.cast(is_correct, tensorflow.float32))
 
 init = tensorflow.global_variables_initializer()
