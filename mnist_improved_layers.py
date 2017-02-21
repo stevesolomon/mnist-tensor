@@ -27,6 +27,11 @@ biases = [tf.zeros([layer_sizes[0]]),
 # We're going to use a variable learning rate so just init as a placeholder.
 learning_rate_placeholder = tf.placeholder(tf.float32)
 
+# Placeholder for the probability of keeping a neuron.
+keep_probability = tf.placeholder(tf.float32)
+TRAINING_KEEP_PROBABILITY = 0.75
+TEST_KEEP_PROBABILITY = 1.0
+
 # Pull down the mnist data.
 mnist_data = input_data.read_data_sets("mnist_data/", reshape=False, one_hot=True)
 
@@ -37,11 +42,21 @@ images = tf.placeholder(tf.float32, [None, 28, 28, 1])
 flattened_images = tf.reshape(images, [-1, IMAGE_PIXEL_COUNT])
 
 layer1 = tf.nn.relu(tf.matmul(flattened_images, weights[0]) + biases[0])
-layer2 = tf.nn.relu(tf.matmul(layer1, weights[1]) + biases[1])
-layer3 = tf.nn.relu(tf.matmul(layer2, weights[2]) + biases[2])
-layer4 = tf.nn.relu(tf.matmul(layer3, weights[3]) + biases[3])
-layer5 = tf.nn.relu(tf.matmul(layer4, weights[4]) + biases[4])
-logits = tf.matmul(layer5, weights[5]) + biases[5]
+layer1_dropout = tf.nn.dropout(layer1, keep_probability)
+
+layer2 = tf.nn.relu(tf.matmul(layer1_dropout, weights[1]) + biases[1])
+layer2_dropout = tf.nn.dropout(layer2, keep_probability)
+
+layer3 = tf.nn.relu(tf.matmul(layer2_dropout, weights[2]) + biases[2])
+layer3_dropout = tf.nn.dropout(layer3, keep_probability)
+
+layer4 = tf.nn.relu(tf.matmul(layer3_dropout, weights[3]) + biases[3])
+layer4_dropout = tf.nn.dropout(layer4, keep_probability)
+
+layer5 = tf.nn.relu(tf.matmul(layer4_dropout, weights[4]) + biases[4])
+layer5_dropout = tf.nn.dropout(layer5, keep_probability)
+
+logits = tf.matmul(layer5_dropout, weights[5]) + biases[5]
 layer6 = tf.nn.softmax(logits)
 
 # Correct Answers will be stored here
@@ -69,7 +84,7 @@ test_results = []
 def run_training_step(results, lr):
     # Load in a batch of 100 images at a time, along with the correct answers
     curr_images, currmodel_answers = mnist_data.train.next_batch(100)
-    training_data = {images: curr_images, model_answers: currmodel_answers, learning_rate_placeholder: lr}
+    training_data = {images: curr_images, model_answers: currmodel_answers, learning_rate_placeholder: lr, keep_probability: TRAINING_KEEP_PROBABILITY}
 
     # Run a training session!
     session.run(training_step, feed_dict=training_data)
@@ -82,7 +97,8 @@ def run_test_step(results, lr):
                                feed_dict={
                                    images: mnist_data.test.images,
                                    model_answers:mnist_data.test.labels,
-                                   learning_rate_placeholder: lr
+                                   learning_rate_placeholder: lr,
+                                   keep_probability: TEST_KEEP_PROBABILITY
                                    }))
 
 for i in range(10000):
