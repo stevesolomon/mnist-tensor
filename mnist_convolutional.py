@@ -6,13 +6,13 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 IMAGE_PIXEL_COUNT = 784
 
-layer_sizes = [4, 8, 12, 200, 10]
+layer_sizes = [6, 12, 24, 200, 10]
 
-weights = [tf.Variable(tf.truncated_normal([5, 5, 1, layer_sizes[0]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([5, 5, 4, layer_sizes[1]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([4, 4, 8, layer_sizes[2]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([7*7*12, layer_sizes[3]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([200, layer_sizes[4]], stddev=0.2))
+weights = [tf.Variable(tf.truncated_normal([6, 6, 1, layer_sizes[0]], stddev=0.2)),
+           tf.Variable(tf.truncated_normal([5, 5, layer_sizes[0], layer_sizes[1]], stddev=0.2)),
+           tf.Variable(tf.truncated_normal([4, 4, layer_sizes[1], layer_sizes[2]], stddev=0.2)),
+           tf.Variable(tf.truncated_normal([7*7*layer_sizes[2], layer_sizes[3]], stddev=0.2)),
+           tf.Variable(tf.truncated_normal([layer_sizes[3], layer_sizes[4]], stddev=0.2))
           ]
 
 biases = [tf.zeros([layer_sizes[0]]),
@@ -43,8 +43,9 @@ layer3 = tf.nn.relu(tf.nn.conv2d(layer2, weights[2], strides=[1, 2, 2, 1], paddi
 reshaped_layer = tf.reshape(layer3, shape=[-1, 7 * 7 * layer_sizes[2]])
 
 layer4 = tf.nn.relu(tf.matmul(reshaped_layer, weights[3]) + biases[3])
+layer4_dropout = tf.nn.dropout(layer4, keep_probability)
 
-logits = tf.matmul(layer4, weights[4]) + biases[4]
+logits = tf.matmul(layer4_dropout, weights[4]) + biases[4]
 layer5 = tf.nn.softmax(logits)
 
 # Correct Answers will be stored here
