@@ -40,6 +40,7 @@ layer1 = tf.nn.relu(tf.nn.conv2d(images, weights[0], strides=[1, 1, 1, 1], paddi
 layer2 = tf.nn.relu(tf.nn.conv2d(layer1, weights[1], strides=[1, 2, 2, 1], padding='SAME') + biases[1])
 layer3 = tf.nn.relu(tf.nn.conv2d(layer2, weights[2], strides=[1, 2, 2, 1], padding='SAME') + biases[2])
 
+# Layer 4 is a fully connected layer, so reshape the previous layer into a 1D array.
 reshaped_layer = tf.reshape(layer3, shape=[-1, 7 * 7 * layer_sizes[2]])
 
 layer4 = tf.nn.relu(tf.matmul(reshaped_layer, weights[3]) + biases[3])
@@ -94,7 +95,7 @@ for i in range(10000):
 
     # Add in learning rate decay 
     min_learning_rate = 0.0001
-    max_learning_rate = 0.004    
+    max_learning_rate = 0.003
     decay_speed = 2000.0
     lr = min_learning_rate + (max_learning_rate - min_learning_rate) * math.exp(-i / decay_speed)
 
