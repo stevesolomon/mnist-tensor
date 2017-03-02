@@ -8,11 +8,11 @@ IMAGE_PIXEL_COUNT = 784
 
 layer_sizes = [6, 12, 24, 200, 10]
 
-weights = [tf.Variable(tf.truncated_normal([6, 6, 1, layer_sizes[0]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([5, 5, layer_sizes[0], layer_sizes[1]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([4, 4, layer_sizes[1], layer_sizes[2]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([7*7*layer_sizes[2], layer_sizes[3]], stddev=0.2)),
-           tf.Variable(tf.truncated_normal([layer_sizes[3], layer_sizes[4]], stddev=0.2))
+weights = [tf.Variable(tf.truncated_normal([6, 6, 1, layer_sizes[0]], stddev=0.1)),
+           tf.Variable(tf.truncated_normal([5, 5, layer_sizes[0], layer_sizes[1]], stddev=0.1)),
+           tf.Variable(tf.truncated_normal([4, 4, layer_sizes[1], layer_sizes[2]], stddev=0.1)),
+           tf.Variable(tf.truncated_normal([7*7*layer_sizes[2], layer_sizes[3]], stddev=0.1)),
+           tf.Variable(tf.truncated_normal([layer_sizes[3], layer_sizes[4]], stddev=0.1))
           ]
 
 biases = [tf.zeros([layer_sizes[0]]),
