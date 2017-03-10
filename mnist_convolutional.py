@@ -15,11 +15,11 @@ weights = [tf.Variable(tf.truncated_normal([6, 6, 1, layer_sizes[0]], stddev=0.1
            tf.Variable(tf.truncated_normal([layer_sizes[3], layer_sizes[4]], stddev=0.1))
           ]
 
-biases = [tf.zeros([layer_sizes[0]]),
-          tf.zeros([layer_sizes[1]]),
-          tf.zeros([layer_sizes[2]]),
-          tf.zeros([layer_sizes[3]]),
-          tf.zeros([layer_sizes[4]])
+biases = [tf.Variable(tf.ones([layer_sizes[0]])/10),
+          tf.Variable(tf.ones([layer_sizes[1]])/10),
+          tf.Variable(tf.ones([layer_sizes[2]])/10),
+          tf.Variable(tf.ones([layer_sizes[3]])/10),
+          tf.Variable(tf.ones([layer_sizes[4]])/10)
          ]
 
 # We're going to use a variable learning rate so just init as a placeholder.
